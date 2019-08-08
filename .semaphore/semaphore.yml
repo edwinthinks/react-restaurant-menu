@@ -33,6 +33,9 @@ blocks:
       - name: Tests
         commands:
           - npm test
+      - name: Style
+        commands:
+          - npm run lint
 
 promotions:
   - name: Production deploy
