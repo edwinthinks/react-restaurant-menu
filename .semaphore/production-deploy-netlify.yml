@@ -1,0 +1,25 @@
+version: v1.0
+name: Deploy website
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: 🏁 Deploy
+    task:
+      # Mount a secret which defines /home/semaphore/.netlify/config.json and
+      # /home/semaphore/.netlify/state.json.
+      # For info on creating secrets, see:
+      # https://docs.semaphoreci.com/article/66-environment-variables-and-secrets
+      secrets:
+        - name: netlify-authentication
+      jobs:
+        - name: Deploy to netlify
+          commands:
+            - npm install netlify-cli -g
+            # restore the website cached as website-build
+            - cache restore website-build-$SEMAPHORE_GIT_BRANCH
+            # deploy the contents of the public directory
+            - netlify deploy --dir=build --prod
+
+
