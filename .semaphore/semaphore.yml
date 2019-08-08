@@ -3,21 +3,30 @@
 # https://docs.semaphoreci.com/category/58-programming-languages
 # https://docs.semaphoreci.com/category/56-guided-tour
 version: v1.0
-name: Hello Semaphore
+name: Inspiration Ipsum
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
+
 blocks:
-  - name: Simple example
+  - name: Build
     task:
-      env_vars:
-        - name: APP_ENV
-          value: prod
       jobs:
-      - name: Download our code
+      - name: Build
         commands:
-          - echo "Hello from Semaphore!"
-          - echo $APP_ENV
+          - sem-version node 10.10.0
           - checkout
-          - ls -alh
+          - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum yarn.lock)
+          - npm ci
+          - cache store node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum yarn.lock) node_modules
+          - npm build
+          - cache store website-build-$SEMAPHORE_GIT_BRANCH build
+
+promotions:
+  - name: Production deploy
+    pipeline_file: production-deploy-netlify.yml
+    auto_promote_on:
+      - result: passed
+        branch:
+          - master
