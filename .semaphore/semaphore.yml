@@ -23,6 +23,18 @@ blocks:
           - npm build
           - cache store website-build-$SEMAPHORE_GIT_BRANCH build
 
+  - name: Test
+    task:
+      prologue:
+        commands:
+          - checkout
+          - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum yarn.lock)
+      jobs:
+      - name: Tests
+        commands:
+          - npm test
+
+
 promotions:
   - name: Production deploy
     pipeline_file: production-deploy-netlify.yml
