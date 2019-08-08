@@ -20,6 +20,6 @@ blocks:
             # restore the website cached as website-build
             - cache restore website-build-$SEMAPHORE_GIT_BRANCH
             # deploy the contents of the public directory
-            - netlify deploy --dir=build --prod
+            - netlify deploy --dir=dist --prod
 
 

@@ -17,23 +17,22 @@ blocks:
         commands:
           - sem-version node 10.10.0
           - checkout
-          - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum yarn.lock)
+          - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
           - npm ci
-          - cache store node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum yarn.lock) node_modules
-          - npm build
-          - cache store website-build-$SEMAPHORE_GIT_BRANCH build
+          - cache store node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
+          - npm run build
+          - cache store website-build-$SEMAPHORE_GIT_BRANCH dist
 
   - name: Test
     task:
       prologue:
         commands:
           - checkout
-          - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum yarn.lock)
+          - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
       jobs:
       - name: Tests
         commands:
           - npm test
-
 
 promotions:
   - name: Production deploy
