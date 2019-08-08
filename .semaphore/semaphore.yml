@@ -33,6 +33,12 @@ blocks:
       - name: Tests
         commands:
           - npm test
+      - name: Javascript Style
+        commands:
+          - npm run lint
+      - name: Stylesheet Style
+        commands:
+          - npm run stylelint
 
 promotions:
   - name: Production deploy
