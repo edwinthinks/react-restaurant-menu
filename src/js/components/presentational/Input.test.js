@@ -1,22 +1,32 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, fireEvent} from 'test-utils'
 import Input from './Input.jsx'
 
-test('Input has all the values provided in the prop', () => {
+test('changing the value trigger the handleChange prop', () => {
+  const handleKeyPressSpy = jest.fn();
+  const handleChangeSpy = jest.fn();
+
   // id of the input field must match the 'for' of the label
   const props = {
     label: 'fakeInput',
+    type: 'text',
     text: 'fake',
-    type: 'fake type',
     id: 'fakeInput',
-    value: 'fake-value',
-    handleChange: () => {}
+    value: '',
+    handleChange: handleChangeSpy,
+    handleKeyPress: handleKeyPressSpy
   }
 
   const { getByLabelText } = render(
     <Input {...props}/>
   )
 
-  const inputField = getByLabelText(props.text)
-  expect(inputField).not.toBeNull()
+  const input = getByLabelText(props.text);
+  expect(input.value).toBe('')
+
+  fireEvent.keyPress(input, { key: "Enter", code: 13, charCode: 13 });
+  expect(handleKeyPressSpy).toHaveBeenCalledTimes(1);
+
+  fireEvent.change(input, { target: { value: '23' } })
+  expect(handleChangeSpy).toHaveBeenCalledTimes(1);
 })

@@ -29,6 +29,26 @@ test('adding and removing a todo item', () => {
   expect(queryAllByText(/Todo -/i)).toHaveLength(1);
 })
 
+test('pressing enter when the input has values adds the task', () => {
+  const { queryByText, getByText, getByLabelText, queryAllByText } = render(
+    <TodoList/>
+  )
+
+  let inputField = getByLabelText(/new todo task/i);
+
+  expect(inputField.value).toBe('');
+
+  // Press enter with nothing in the field
+  fireEvent.keyDown(inputField, { key: 'Enter', code: 13 })
+
+  expect(queryAllByText(/Todo -/i)).toHaveLength(0);
+
+  fireEvent.change(inputField, {target: {value: 'something'}})
+  fireEvent.keyPress(inputField, { key: "Enter", code: 13, charCode: 13 });
+
+  expect(queryAllByText(/Todo -/i)).toHaveLength(1);
+})
+
 test('add button does appears only when there is something in the input', () => {
   const { queryByText, getByText, getByLabelText, queryAllByText } = render(
     <TodoList/>

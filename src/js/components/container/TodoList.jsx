@@ -26,6 +26,7 @@ function TodoList() {
         text="New Todo Task"
         id="new-todo-task"
         handleChange={(v) => setNewTodoTask(v.target.value)}
+        handleKeyPress ={(v) => { (v.key === 'Enter' && newTodoTask) && handleSubmit() } }
       />
 
       { newTodoTask ? <button onClick={handleSubmit}> Add </button> : '' }
