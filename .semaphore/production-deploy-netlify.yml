@@ -18,7 +18,7 @@ blocks:
           commands:
             - npm install netlify-cli -g
             # restore the website cached as website-build
-            - cache restore website-build-$SEMAPHORE_GIT_BRANCH
+            - cache restore website-build-$SEMAPHORE_GIT_BRANCH-$SEMAPHORE_GIT_SHA
             # deploy the contents of the public directory
             - netlify deploy --dir=dist --prod
 

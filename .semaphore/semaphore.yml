@@ -3,7 +3,7 @@
 # https://docs.semaphoreci.com/category/58-programming-languages
 # https://docs.semaphoreci.com/category/56-guided-tour
 version: v1.0
-name: Inspiration Ipsum
+name: Reactive Menu
 agent:
   machine:
     type: e1-standard-2
@@ -21,7 +21,7 @@ blocks:
           - npm ci
           - cache store node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
           - npm run build
-          - cache store website-build-$SEMAPHORE_GIT_BRANCH dist
+          - cache store website-build-$SEMAPHORE_GIT_BRANCH-$SEMAPHORE_GIT_SHA dist
 
   - name: Test
     task:
