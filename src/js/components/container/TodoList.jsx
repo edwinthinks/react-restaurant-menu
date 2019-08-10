@@ -28,7 +28,7 @@ function TodoList() {
         handleChange={(v) => setNewTodoTask(v.target.value)}
       />
 
-      <button onClick={handleSubmit}> Add </button>
+      { newTodoTask ? <button onClick={handleSubmit}> Add </button> : '' }
 
       {todoTasks.map((value, index) => {
         return <TodoListItem key={index} value={value} onRemove={() => { removeTodoListItem(index); }}/>

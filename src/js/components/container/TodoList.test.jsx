@@ -1,6 +1,7 @@
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent } from 'test-utils'
 import TodoList from './TodoList.jsx'
+
 
 test('adding and removing a todo item', () => {
   const { queryByText, getByText, getByLabelText, queryAllByText } = render(
@@ -28,4 +29,14 @@ test('adding and removing a todo item', () => {
   expect(queryAllByText(/Todo -/i)).toHaveLength(1);
 })
 
+test('add button does appears only when there is something in the input', () => {
+  const { queryByText, getByText, getByLabelText, queryAllByText } = render(
+    <TodoList/>
+  )
 
+  expect(queryByText(/add/i)).toBeNull();
+
+  fireEvent.change(getByLabelText(/new todo task/i), {target: {value: 'something'}})
+
+  expect(queryByText(/add/i)).not.toBeNull();
+})
