@@ -6,7 +6,7 @@ function TodoListItem({value, isDone, onRemove}) {
 
   return (
     <>
-      <div>
+      <li>
         <span> Todo - {task} - {done ? 'Done' : 'Not Done'} </span>
         <button onClick={() => setDone(!done)}>
           {done ? 'Mark Incomplete' : 'Mark Done'}
@@ -14,7 +14,7 @@ function TodoListItem({value, isDone, onRemove}) {
         <button onClick={onRemove}>
           Remove
         </button>
-      </div>
+      </li>
     </>
   )
 }

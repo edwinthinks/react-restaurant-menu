@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import Input from "../presentational/Input.jsx";
 import TodoListItem from "../presentational/TodoListItem.jsx";
+import shortid from 'shortid'
 
 function TodoList() {
   const [newTodoTask, setNewTodoTask] = useState('')
   const [todoTasks, setTodoTasks] = useState([])
 
   function handleSubmit() {
-    setTodoTasks(todoTasks.concat(newTodoTask));
+    let newTodoTasks = todoTasks.concat({text: newTodoTask});
+    setTodoTasks(newTodoTasks);
     setNewTodoTask('');
   }
 
@@ -31,8 +33,12 @@ function TodoList() {
 
       { newTodoTask ? <button onClick={handleSubmit}> Add </button> : '' }
 
-      {todoTasks.map((value, index) => {
-        return <TodoListItem key={index} value={value} onRemove={() => { removeTodoListItem(index); }}/>
+      {todoTasks.map((todo, index) => {
+        return <TodoListItem
+          key={shortid.generate()}
+          value={todo.text}
+          onRemove={() => { removeTodoListItem(index) }}
+        />
       })}
     </>
   )
