@@ -2,7 +2,7 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import TodoListItem from './TodoListItem.jsx'
 
-test('TodoListItem shows the provided task and can be marked done or incomplete', () => {
+test('shows the provided task and can be marked done or incomplete', () => {
   let props = {
     value: 'Get a jar of milk',
     done: false,
