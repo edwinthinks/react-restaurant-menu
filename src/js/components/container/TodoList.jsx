@@ -25,6 +25,12 @@ function TodoList() {
     setTodoTasks(newTodoTasks);
   }
 
+  function updateTodoValue(value, index) {
+    let newArr = [...todoTasks]
+    newArr[index] = {...newArr[index], text: value}
+    setTodoTasks(newArr)
+  }
+
   return(
     <div className='w-3/4 border-4 rounded border-indigo-500 mx-auto'>
       <h1 className='text-4xl p-4 bg-indigo-500 text-white'> Todo List </h1>
@@ -35,6 +41,7 @@ function TodoList() {
           key={shortid.generate()}
           isDone={todo.isDone}
           value={todo.text}
+          onEdit={(updatedTodo) => { updateTodoValue(updatedTodo, index) }}
           onToggleDone={() => { toggleDone(index) }}
           onRemove={() => { removeTodoListItem(index) }}
         />
