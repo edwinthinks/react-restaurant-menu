@@ -1,7 +1,5 @@
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
 
 .btn {
@@ -14,6 +12,7 @@
 
 .btn:disabled:hover {
   @apply bg-gray-500 text-white;
+
   cursor: default;
 }
 
