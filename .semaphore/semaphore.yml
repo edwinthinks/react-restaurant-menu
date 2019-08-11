@@ -20,7 +20,7 @@ blocks:
           - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
           - npm ci
           - cache store node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
-          - NODE_ENV=production npm run build
+          - npm run build
           - cache store website-build-$SEMAPHORE_GIT_BRANCH-$SEMAPHORE_GIT_SHA dist
 
   - name: Test
