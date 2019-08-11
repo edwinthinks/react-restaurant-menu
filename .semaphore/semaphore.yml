@@ -12,6 +12,9 @@ agent:
 blocks:
   - name: Build
     task:
+      env_vars:
+        - name: ENV
+          value: "production"
       jobs:
       - name: Build
         commands:

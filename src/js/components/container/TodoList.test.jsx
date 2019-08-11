@@ -10,23 +10,23 @@ test('adding and removing a todo item', () => {
 
   // Add a task
   let firstTask = 'first-task'
-  fireEvent.change(getByLabelText(/new todo task/i), {target: {value: firstTask}})
-  fireEvent.click(getByText(/add/i))
+  fireEvent.change(getByLabelText(/add new task/i), {target: {value: firstTask}})
+  fireEvent.click(getByText(/submit/i))
 
   // Add a second task
   let secondTask = 'second-task'
-  fireEvent.change(getByLabelText(/new todo task/i), {target: {value: secondTask}})
-  fireEvent.click(getByText(/add/i))
+  fireEvent.change(getByLabelText(/add new task/i), {target: {value: secondTask}})
+  fireEvent.click(getByText(/submit/i))
 
   // Check that there are two tasks
-  expect(queryAllByText(/Todo -/i)).toHaveLength(2);
+  expect(queryAllByText(/-task/i)).toHaveLength(2);
 
   // Remove one of them.
   // TODO - how can I be sure I removed that specific one?
   fireEvent.click(queryAllByText('Remove')[1])
 
   // Check that there is correct amount left
-  expect(queryAllByText(/Todo -/i)).toHaveLength(1);
+  expect(queryAllByText(/-task/i)).toHaveLength(1);
 })
 
 test('pressing enter when the input has values adds the task', () => {
@@ -34,19 +34,19 @@ test('pressing enter when the input has values adds the task', () => {
     <TodoList/>
   )
 
-  let inputField = getByLabelText(/new todo task/i);
+  let inputField = getByLabelText(/add new task/i);
 
   expect(inputField.value).toBe('');
 
   // Press enter with nothing in the field
   fireEvent.keyDown(inputField, { key: 'Enter', code: 13 })
 
-  expect(queryAllByText(/Todo -/i)).toHaveLength(0);
+  expect(queryAllByText(/something/i)).toHaveLength(0);
 
   fireEvent.change(inputField, {target: {value: 'something'}})
   fireEvent.keyPress(inputField, { key: "Enter", code: 13, charCode: 13 });
 
-  expect(queryAllByText(/Todo -/i)).toHaveLength(1);
+  expect(queryAllByText(/something/i)).toHaveLength(1);
 })
 
 test('add button does appears only when there is something in the input', () => {
@@ -54,9 +54,9 @@ test('add button does appears only when there is something in the input', () => 
     <TodoList/>
   )
 
-  expect(queryByText(/add/i)).toBeNull();
+  expect(queryByText(/submit/i).hasAttribute('disabled')).toBe(true);
 
-  fireEvent.change(getByLabelText(/new todo task/i), {target: {value: 'something'}})
+  fireEvent.change(getByLabelText(/add new task/i), {target: {value: 'something'}})
 
-  expect(queryByText(/add/i)).not.toBeNull();
+  expect(queryByText(/submit/i).hasAttribute('disabled')).toBe(false);
 })

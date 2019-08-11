@@ -1,5 +1,5 @@
-import './js/components/container/FormContainer.jsx'
 import TodoList from './js/components/container/TodoList.jsx'
+import './styles.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom'

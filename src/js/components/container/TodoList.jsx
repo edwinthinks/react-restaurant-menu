@@ -6,12 +6,18 @@ import shortid from 'shortid'
 
 function TodoList() {
   const [newTodoTask, setNewTodoTask] = useState('')
-  const [todoTasks, setTodoTasks] = useState([])
+  const [todoTasks, setTodoTasks] = useState([{text: 'hello', isDone: true}])
 
   function handleSubmit() {
     let newTodoTasks = todoTasks.concat({text: newTodoTask});
     setTodoTasks(newTodoTasks);
     setNewTodoTask('');
+  }
+
+  function toggleDone(index) {
+    let newArr = [...todoTasks]
+    newArr[index] = {...newArr[index], isDone: !newArr[index].isDone }
+    setTodoTasks(newArr)
   }
 
   function removeTodoListItem(index) {
@@ -20,27 +26,40 @@ function TodoList() {
   }
 
   return(
-    <>
-      <Input
-        label="new-todo-task"
-        type="text"
-        value={newTodoTask}
-        text="New Todo Task"
-        id="new-todo-task"
-        handleChange={(v) => setNewTodoTask(v.target.value)}
-        handleKeyPress ={(v) => { (v.key === 'Enter' && newTodoTask) && handleSubmit() } }
-      />
+    <div className='w-3/4 border-4 rounded border-indigo-500 mx-auto'>
+      <h1 className='text-4xl p-4 bg-indigo-500 text-white'> Todo List </h1>
 
-      { newTodoTask ? <button onClick={handleSubmit}> Add </button> : '' }
-
+      <div className='px-8'>
       {todoTasks.map((todo, index) => {
         return <TodoListItem
           key={shortid.generate()}
+          isDone={todo.isDone}
           value={todo.text}
+          onToggleDone={() => { toggleDone(index) }}
           onRemove={() => { removeTodoListItem(index) }}
         />
       })}
-    </>
+      </div>
+
+      <div className='px-8 py-4'>
+        <Input
+          label="new-todo-task"
+          type="text"
+          value={newTodoTask}
+          text="Add New Task"
+          id="new-todo-task"
+          handleChange={(v) => setNewTodoTask(v.target.value)}
+          handleKeyPress ={(v) => { (v.key === 'Enter' && newTodoTask) && handleSubmit() } }
+        />
+
+        <div className='flex justify-end'>
+          <button className="btn btn-blue" onClick={handleSubmit} disabled={!newTodoTask}>
+            Submit
+          </button>
+        </div>
+      </div>
+
+    </div>
   )
 }
 

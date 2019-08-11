@@ -3,16 +3,19 @@ import PropTypes from "prop-types";
 
 const Input = ({ label, text, type, id, value, handleChange, handleKeyPress }) => (
   <>
-    <label htmlFor={label}>{text}</label>
-    <input
-      type={type}
-      className="form-control"
-      id={id}
-      value={value}
-      onChange={handleChange}
-      onKeyPress={handleKeyPress}
-      required
-    />
+    <div className="mb-4">
+      <label htmlFor={label} className="block text-gray-700 text-sm font-bold mb-2">
+        {text}
+      </label>
+      <input type={type}
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        id={id}
+        value={value}
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        required
+      />
+    </div>
   </>
 );
 
