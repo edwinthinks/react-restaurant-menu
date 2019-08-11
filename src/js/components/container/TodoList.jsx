@@ -5,8 +5,8 @@ import TodoListItem from "../presentational/TodoListItem.jsx";
 import shortid from 'shortid'
 
 function TodoList() {
-  const [newTodoTask, setNewTodoTask] = useState('')
-  const [todoTasks, setTodoTasks] = useState([{text: 'hello', isDone: true}])
+  const [newTodoTask, setNewTodoTask] = useState('');
+  const [todoTasks, setTodoTasks] = useState([]);
 
   function handleSubmit() {
     let newTodoTasks = todoTasks.concat({text: newTodoTask});
