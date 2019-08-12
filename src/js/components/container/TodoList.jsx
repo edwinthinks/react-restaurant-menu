@@ -4,31 +4,120 @@ import Input from "../presentational/Input.jsx";
 import TodoListItem from "../presentational/TodoListItem.jsx";
 import shortid from 'shortid'
 
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
+const GET_TODOS = gql`
+  {
+    todo(order_by: {id: asc}) {
+      id
+      isDone
+      text
+    }
+  }
+`;
+
+const UPDATE_TODO = gql`
+  mutation update_article($id: Int, $isDone: Boolean, $text: String) {
+    update_todo(where: {id: {_eq: $id}}, _set: {isDone: $isDone, text: $text}) {
+      affected_rows
+      returning {
+        id
+        isDone
+        text
+      }
+    }
+  }
+`;
+
+const ADD_TODO = gql`
+  mutation insert_todo($text: String) {
+    insert_todo(objects: {text: $text, isDone: false}) {
+      returning {
+        id
+        text
+        isDone
+      }
+    }
+  }
+`
+
+const DELETE_TODO = gql`
+  mutation delete_todo($id: Int) {
+    delete_todo(where: {id: {_eq: $id}}) {
+      returning {
+        id
+        isDone
+        text
+      }
+    }
+  }
+`
+
 function TodoList() {
+  const { loading, error, data } = useQuery(GET_TODOS)
+
+  const [updateTodo] = useMutation(UPDATE_TODO);
+
+  const [addTodo] = useMutation(ADD_TODO, {
+    update(cache, {data: { insert_todo } } ) {
+      // This updates the local state of graphql results
+      const { todo } = cache.readQuery({ query: GET_TODOS });
+      cache.writeQuery({
+        query: GET_TODOS,
+        data: { todo: todo.concat(insert_todo.returning) },
+      });
+    }
+  });
+
+  const [deleteTodo] = useMutation(DELETE_TODO, {
+    update(cache, {data: { delete_todo } } ) {
+      const { todo } = cache.readQuery({ query: GET_TODOS });
+      let newTodos = todo.filter((t) => {
+        return t.id !== delete_todo.returning[0].id
+      });
+
+      cache.writeQuery({
+        query: GET_TODOS,
+        data: { todo: newTodos  },
+      });
+    }
+  });
+
   const [newTodoTask, setNewTodoTask] = useState('');
-  const [todoTasks, setTodoTasks] = useState([]);
 
   function handleSubmit() {
-    let newTodoTasks = todoTasks.concat({text: newTodoTask});
-    setTodoTasks(newTodoTasks);
+    addTodo({ variables: { text: newTodoTask } })
     setNewTodoTask('');
   }
 
   function toggleDone(index) {
-    let newArr = [...todoTasks]
-    newArr[index] = {...newArr[index], isDone: !newArr[index].isDone }
-    setTodoTasks(newArr)
+    let task = data.todo[index];
+
+    updateTodo({ variables: {
+      id: task.id,
+      isDone: !task.isDone,
+      text: task.text
+    }});
   }
 
   function removeTodoListItem(index) {
-    let newTodoTasks = todoTasks.filter((val,idx) => { return idx !== index; })
-    setTodoTasks(newTodoTasks);
+    let task = data.todo[index];
+    deleteTodo({ variables: { id: task.id } })
   }
 
   function updateTodoValue(value, index) {
-    let newArr = [...todoTasks]
-    newArr[index] = {...newArr[index], text: value}
-    setTodoTasks(newArr)
+    let task = data.todo[index];
+
+    updateTodo({ variables: {
+      id: task.id,
+      isDone: task.isDone,
+      text: value
+    }});
+  }
+
+  if (loading) {
+    return <p>Loading ... </p>
   }
 
   return(
@@ -36,7 +125,7 @@ function TodoList() {
       <h1 className='text-4xl p-4 bg-indigo-500 text-white'> Todo List </h1>
 
       <div className='px-8'>
-      {todoTasks.map((todo, index) => {
+      {data.todo.map((todo, index) => {
         return <TodoListItem
           key={shortid.generate()}
           isDone={todo.isDone}
@@ -46,6 +135,7 @@ function TodoList() {
           onRemove={() => { removeTodoListItem(index) }}
         />
       })}
+
       </div>
 
       <div className='px-8 py-4'>
