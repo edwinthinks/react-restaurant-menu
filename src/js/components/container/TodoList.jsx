@@ -4,9 +4,19 @@ import Input from "../presentational/Input.jsx";
 import TodoListItem from "../presentational/TodoListItem.jsx";
 import shortid from 'shortid'
 
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
+
+const SUBSCRIBE_TODOS = gql`
+subscription {
+  todo {
+    id
+    isDone
+    text
+  }
+}
+`
 const GET_TODOS = gql`
   {
     todo(order_by: {id: asc}) {
@@ -55,7 +65,17 @@ const DELETE_TODO = gql`
 `
 
 function TodoList() {
-  const { loading, error, data } = useQuery(GET_TODOS)
+  const { subscribeToMore, loading, error, data } = useQuery(GET_TODOS)
+
+  console.log(subscribeToMore);
+  subscribeToMore({
+    document: SUBSCRIBE_TODOS,
+    updateQuery: (prev, { subscriptionData }) => {
+      if (!subscriptionData.data.todo) return prev;
+      const newTodo = subscriptionData.data.todo;
+      return Object.assign({}, prev, { todo: newTodo})
+    }
+  })
 
   const [updateTodo] = useMutation(UPDATE_TODO);
 
@@ -83,6 +103,8 @@ function TodoList() {
       });
     }
   });
+
+  // const v = subscribeToMore(SUBSCRIBE_TODOS);
 
   const [newTodoTask, setNewTodoTask] = useState('');
 
